@@ -74,6 +74,38 @@ def main():
     full = fullSent(testingData,final,1)
     printList(full)
 
+def crossValidate(data_matrix, splitPercentage):
+	trainLength = float(len(data_matrix) * splitPercentage) / float(100)
+	testLength = len(data_matrix) - trainLength
+
+	trainMatrix = []
+	for i in range(0, trainLength):
+		trainMatrix.append(data_matrix[i])
+	trainMatrix = convertToReadableFormat(trainMatrix)
+
+	testMatrix = []
+	for i in range(trainLength, len(data_matrix)):
+		testMatrix.append(data_matrix[i])
+	testMatrix = convertToReadableFormat(testMatrix)
+
+	
+
+def convertToReadableFormat(matrix):
+	m = []
+	for line in matrix:
+		temp = []
+		line = line.replace("\n", "")
+        line = line.replace("?", "")
+        line = line.replace(".", "")
+        s = line.split(",\"")
+        temp.append(s[0])
+        s = s[1].split("\",")
+        #print(s)
+        temp.append(s[0])
+        m.append(temp)
+
+    return m
+
 
 def clean(matrix):
     printable = set(string.printable)
