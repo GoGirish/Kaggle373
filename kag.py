@@ -43,7 +43,7 @@ def main():
     final = findSentperWord(sentiments)
     #print final
 
-    full = fullSent(trainingData,final)
+    full = fullSent(trainingData,final,0)
    # printList(full)
 
     # print(accuracy(full,trainingData))
@@ -71,7 +71,7 @@ def main():
 
     testing = splitMatrix(testingData)
 
-    full = fullSent(testingData,final)
+    full = fullSent(testingData,final,1)
     printList(full)
 
 
@@ -239,19 +239,30 @@ def find_majority(k):
 
     return maximum[0]
 
-def fullSent(train,final):
+def fullSent(train,final,test):
     sentenceSent = []
     sum = 0.0
     majority =[]
     
-    for i in range(0,len(train)):
-        for j in range(0,len(train[i][3])):
-            found = findSentFinal(final,train[i][3][j])
-            sum += final[found][1]
-            majority.append(final[found][1])
-        sentenceSent.append([train[i][1],sum/len(train[i][3]),find_majority(majority),train[i][2]])
-        majority = []
-        sum = 0.0
+    if test == 0 :
+        for i in range(0,len(train)):
+            for j in range(0,len(train[i][3])):
+                found = findSentFinal(final,train[i][3][j])
+                sum += final[found][1]
+                majority.append(final[found][1])
+            sentenceSent.append([train[i][1],sum/len(train[i][3]),find_majority(majority),train[i][2]])
+            majority = []
+            sum = 0.0
+    else:
+        for i in range(0,len(train)):
+            for j in range(0,len(train[i][2])):
+                found = findSentFinal(final,train[i][2][j])
+                sum += final[found][1]
+                majority.append(final[found][1])
+            sentenceSent.append([train[i][1],sum/len(train[i][2]),find_majority(majority))
+            majority = []
+            sum = 0.0
+
     
     return sentenceSent
 
