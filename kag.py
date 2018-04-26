@@ -31,19 +31,26 @@ def main():
     	temp.append(s[1])
     	data_matrix.append(temp)
 
+
+    crossValidate(data_matrix, 70)
+    exit()
     #print("hello")
-    trainingData = clean(data_matrix)
+    #trainingData = clean(data_matrix)
     # printList(trainingData)
 
-    training = splitMatrix(trainingData)
+    training = splitMatrix(data_matrix)
 
     sentiments = findSent(training)
     #print sentiments
-
+    # printList(sentiments)
+    # exit()
     final = findSentperWord(sentiments)
     #print final
-
-    full = fullSent(trainingData,final,0)
+    #printList(final)
+    #exit()
+    # printList(data_matrix)
+    # exit()
+    #full = fullSent(data_matrix,final,0)
    # printList(full)
 
     # print(accuracy(full,trainingData))
@@ -66,37 +73,56 @@ def main():
         data_matrix2.append(temp)
 
     #print("hello")
-    testingData = clean(data_matrix2)
     # printList(testingData)
 
-    testing = splitMatrix(testingData)
+    testing = splitMatrix(data_matrix2)
 
-    full = fullSent(testingData,final,1)
-    printList(full)
+    full = fullSent(testing,final,1)
+    # printList(full)
+    saveIntoEndFile(full)
+
+def saveIntoEndFile(data_matrix):
+	f = open("solution.csv", "w+")
+	f.write("id,sentiment\n")
+
+	for line in data_matrix:
+		s = str(line[0]) + "," + str(int(round(line[3]))) + "\n"
+		f.write(s)
+	f.close()
 
 def crossValidate(data_matrix, splitPercentage):
-	trainLength = float(len(data_matrix) * splitPercentage) / float(100)
+	trainLength = int(float(len(data_matrix) * splitPercentage) / float(100))
 	testLength = len(data_matrix) - trainLength
 
 	trainMatrix = []
 	for i in range(0, trainLength):
 		trainMatrix.append(data_matrix[i])
-	trainMatrix = convertToReadableFormat(trainMatrix)
+	#trainMatrix = convertToReadableFormat(trainMatrix)
 
 	testMatrix = []
 	for i in range(trainLength, len(data_matrix)):
 		testMatrix.append(data_matrix[i])
-	testMatrix = convertToReadableFormat(testMatrix)
+	#testMatrix = convertToReadableFormat(testMatrix)
 
-	
+	#training
+	training = splitMatrix(trainMatrix)
+	sentiments = findSent(training)
+	final = findSentperWord(sentiments)
+
+	#testing
+	splitMatrix(testMatrix)
+	full = fullSent(testMatrix, final, 0)
+	printList(full)
+	print(accuracy(full, testMatrix))
+
 
 def convertToReadableFormat(matrix):
 	m = []
 	for line in matrix:
 		temp = []
-		line = line.replace("\n", "")
-        line = line.replace("?", "")
-        line = line.replace(".", "")
+		line[1] = line.replace("\n", "")
+        line[1] = line.replace("?", "")
+        line[1] = line.replace(".", "")
         s = line.split(",\"")
         temp.append(s[0])
         s = s[1].split("\",")
@@ -104,7 +130,7 @@ def convertToReadableFormat(matrix):
         temp.append(s[0])
         m.append(temp)
 
-    return m
+	return m
 
 
 def clean(matrix):
@@ -282,16 +308,17 @@ def fullSent(train,final,test):
                 found = findSentFinal(final,train[i][3][j])
                 sum += final[found][1]
                 majority.append(final[found][1])
-            sentenceSent.append([train[i][1],sum/len(train[i][3]),find_majority(majority),train[i][2]])
+            sentenceSent.append([train[i][0],train[i][1],sum/len(train[i][3]),find_majority(majority),train[i][2]])
             majority = []
             sum = 0.0
     else:
         for i in range(0,len(train)):
             for j in range(0,len(train[i][2])):
                 found = findSentFinal(final,train[i][2][j])
-                sum += final[found][1]
-                majority.append(final[found][1])
-            sentenceSent.append([train[i][1],sum/len(train[i][2]),find_majority(majority))
+                if found != -1:
+                	sum += final[found][1]
+                	majority.append(final[found][1])
+            sentenceSent.append([train[i][0],train[i][1],sum/len(train[i][2]),find_majority(majority)])
             majority = []
             sum = 0.0
 
@@ -302,7 +329,7 @@ def accuracy(sentenceSent,train):
     sum = 0.0
     plusMinus = 0.0
     for i in range(0,len(sentenceSent)):
-        if int(sentenceSent[i][3]) == int(round(sentenceSent[i][2])):
+        if int(sentenceSent[i][4]) == int(round(sentenceSent[i][3])):
             sum += 1
         
             
