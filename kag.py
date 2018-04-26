@@ -97,11 +97,13 @@ def crossValidate(data_matrix, splitPercentage):
 	trainMatrix = []
 	for i in range(0, trainLength):
 		trainMatrix.append(data_matrix[i])
+	trainMatrix = clean(trainMatrix)
 	#trainMatrix = convertToReadableFormat(trainMatrix)
 
 	testMatrix = []
 	for i in range(trainLength, len(data_matrix)):
 		testMatrix.append(data_matrix[i])
+	testMatrix = clean(testMatrix)
 	#testMatrix = convertToReadableFormat(testMatrix)
 
 	#training
@@ -203,12 +205,12 @@ def splitMatrix(train):
         train[i].append(train[i][1].split(' '))
     return train
 
-        
 def findSent(train):
     sentiments = [[]for i in range(0,5)]
     for i in range(0,len(train)):
         #print(train[i][2])
         if(int(train[i][2]) == 0):
+
             for j in range(0,len(train[i][3])):
                 found = findIndex(sentiments,0,train[i][3][j])
                 if found != -1:
