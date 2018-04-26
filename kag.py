@@ -31,7 +31,7 @@ def main():
     	temp.append(s[1])
     	data_matrix.append(temp)
 
-
+    #data_matrix = clean(data_matrix)
     crossValidate(data_matrix, 70)
     exit()
     #print("hello")
@@ -168,31 +168,31 @@ def toSent(array):
 def trimSentence(word_POS):
     sentence_array = []
     for word in word_POS:
-        if word[1] == "IN":
-            #do nothing
-            pass
-        elif word[1] == "TO":
-            pass
-        elif word[1] == "$":
-            pass
-        elif word[1] == "CD":
-            pass
-        elif word[1] == "CC":
-            pass
-        elif word[1] == ":":
-            pass
-        elif word[0] == "%":
-            pass
-        elif word[0] == "pct" or word[0] == "percent":
-            pass
-        elif word[0] == "second": #######
-            pass
-        elif word[0] == "wo":
-            sentence_array.append("will")
-        elif word[0] == "n't":
-            sentence_array.append("not")
+        # if word[1] == "IN":
+        #     #do nothing
+        #     pass
+        # elif word[1] == "TO":
+        #     pass
+        # elif word[1] == "$":
+        #     pass
+        # elif word[1] == "CD":
+        #     pass
+        # elif word[1] == "CC":
+        #     pass
+        # elif word[1] == ":":
+        #     pass
+        # elif word[0] == "%":
+        #     pass
+        # elif word[0] == "pct" or word[0] == "percent":
+        #     pass
+        # elif word[0] == "second": #######
+        #     pass
+        # elif word[0] == "wo":
+        #     sentence_array.append("will")
+        # elif word[0] == "n't":
+        #     sentence_array.append("not")
         #if its a verb, add the base of that verb
-        elif word[1] == "VB" or word[1] == "VBD" or word[1] == "VBG" or word[1] == "VBN" or word[1] == "VBP" or word[1] == "VBZ":
+        if word[1] == "VB" or word[1] == "VBD" or word[1] == "VBG" or word[1] == "VBN" or word[1] == "VBP" or word[1] == "VBZ":
             base = WordNetLemmatizer().lemmatize(word[0], 'v')
             sentence_array.append(base)
         else:
@@ -267,8 +267,7 @@ def findSentperWord(sentiments):
                         sum += k*sentiments[k][index][1]
                         majority.append(sentiments[k][index][1])
 
-                finalSents.append([sentiments[i][j][0],find_majority(majority)])
-                majority = []
+                finalSents.append([sentiments[i][j][0],(sum/total)])
             sum = 0.0
             total = 0.0
             found = -1
