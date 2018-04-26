@@ -33,20 +33,31 @@ def main():
 
     #print("hello")
     trainingData = clean(data_matrix)
-    # printList(trainingData)
-
+    #printList(trainingData)
+    #exit()
     training = splitMatrix(trainingData)
 
     sentiments = findSent(training)
+    # printList(sentiments[0])
+    # exit()
     #print sentiments
 
     final = findSentperWord(sentiments)
     #print final
+    # printList(final)
+    # exit()
 
     full = fullSent(trainingData,final)
+    #full = fullSentMod(trainingData, final)
+    printList(full)
+    #calcAccuracy(full, 1,2)
+    #exit()
+    #printList(full)
+    #exit()
    # printList(full)
 
-    # print(accuracy(full,trainingData))
+    print(accuracy(full,trainingData))
+    exit()
 
     file2 = open(testingFile, "r")
     data2 = file2.readline()
@@ -94,7 +105,7 @@ def clean(matrix):
         tokens = nltk.word_tokenize(headline)
         tagged = nltk.pos_tag(tokens)
         s = trimSentence(tagged)
-        line[1] = toSent(s)
+        line[1] = str(toSent(s))
         #print(line)
 
     return matrix
@@ -196,7 +207,9 @@ def findSentperWord(sentiments):
     majority =[]
 
     for i in range(0,len(sentiments)):
+    	#for every rating
         for j in range(0,len(sentiments[i])):
+        	#for every word in each rating
             if(len(finalSents)>0):
                 found = findSentFinal(finalSents,sentiments[i][j][0])
             if found == -1:
@@ -206,7 +219,7 @@ def findSentperWord(sentiments):
                         total += sentiments[k][index][1]
                         sum += k*sentiments[k][index][1]
 
-                finalSents.append([sentiments[i][j][0],(sum/total)])
+                finalSents.append([sentiments[i][j][0],(sum/total), sum, total])
             sum = 0.0
             total = 0.0
             found = -1
@@ -238,6 +251,44 @@ def find_majority(k):
         if myMap[n] > maximum[1]: maximum = (n,myMap[n])
 
     return maximum[0]
+
+def fullSentMod(train, final):
+	print("fullSentMod")
+	result = []
+
+	for i in range(0, len(train)):
+		#...for every sentence
+		dataPoint = train[i]
+		#print(dataPoint)
+		words = dataPoint[3]
+
+		#sum and total
+		sum = 0.0
+		total = 0.0
+		for word in words:
+			pSum, pTotal = lookupWord(final, word)
+			sum += pSum
+			total += pTotal
+
+		predictedScore = sum / total
+		result.append([dataPoint[1], dataPoint[2], predictedScore])
+
+	return result
+
+def calcAccuracy(matrix, ind1, ind2):
+	sum = 0.0
+	for line in matrix:
+		if int(line[ind1]) == round(line[ind2]):
+			sum += 1
+
+	print sum/float(len(matrix))
+
+
+def lookupWord(wordData, word):
+	for w in wordData:
+		if w[0] == word:
+			return w[2], w[3]
+	return 0,0
 
 def fullSent(train,final):
     sentenceSent = []
