@@ -265,8 +265,10 @@ def findSentperWord(sentiments):
                     if index != -1:
                         total += sentiments[k][index][1]
                         sum += k*sentiments[k][index][1]
+                        majority.append(sentiments[k][index][1])
 
-                finalSents.append([sentiments[i][j][0],(sum/total)])
+                finalSents.append([sentiments[i][j][0],find_majority(majority)])
+                majority = []
             sum = 0.0
             total = 0.0
             found = -1
