@@ -3,6 +3,7 @@ import numpy as numpy
 import matplotlib.pyplot as pyplot
 from bs4 import BeautifulSoup
 from nltk.tokenize import WordPunctTokenizer
+import re
 
 trainingFile = "Headline_Trainingdata.csv"
 testingFile = "Headline_Testingdata.csv"
@@ -13,14 +14,24 @@ def main():
 	print(df.head())
 	skipLines(1)
 	print(df.sentiment.value_counts())
-
+	skipLines(1)
+	clean_headlines_raw = cleanData(df)
+	exit()
+	clean_df = pd.DataFrame(clean_headlines_raw, columns=['text'])
+	clean_df['target'] = df.sentiment
+	print(clean_df.head())
 
 def cleanData(matrix):
+	clean_headlines = []
 	for i in range(len(matrix)):
-		line[1] = headline_cleaner(line[1])
+		print(matrix[i])
+		clean_headlines.append(headline_cleaner(matrix[i][1]))
 
-	return matrix
+	return clean_headlines
 
+def printList(l):
+	for item in l:
+		print(item)
 
 def headline_cleaner(text):
 	tok = WordPunctTokenizer()
