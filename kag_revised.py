@@ -78,7 +78,7 @@ def calcProb(sentence_array, counts, totals):
 
 def cleanData(data_matrix):
 	printable = set(string.printable)
-	#prepositions = ["is", "a", "at", "the", "which", "on ", "to"]
+	prepositions = ["is", "a", "at", "the", "which", "on ", "to"]
 
 	for line in data_matrix:
 		line[1] = line[1].replace("UPDATE 5-", "")
@@ -99,8 +99,11 @@ def cleanData(data_matrix):
 		# 	line[1] = line[1].replace(prep, "")
 
 		sentence_array = nltk.word_tokenize(line[1])
+		# for pr in prepositions:
+		# 	try:
+		# 		sentence_array.remove(pr)
 		for i in range(len(sentence_array)):
-			sentence_array[i] = str(WordNetLemmatizer().lemmatize(sentence_array[i], 'v'))
+			#sentence_array[i] = str(WordNetLemmatizer().lemmatize(sentence_array[i], 'v'))
 			sentence_array[i] = str(singularize(sentence_array[i]))
 
 

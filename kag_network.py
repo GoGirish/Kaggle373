@@ -22,6 +22,7 @@ def main():
 	print(clean_df.head())
 
 def cleanData(matrix):
+	printList(matrix)
 	clean_headlines = []
 	for i in range(len(matrix)):
 		print(matrix[i])
