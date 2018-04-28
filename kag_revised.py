@@ -11,13 +11,13 @@ totals = []
 
 def main():
 	global totals
-	trainingMatrix, testMatrix = getFileMatrix(trainingFile, 70)
+	trainingMatrix, testMatrix = getFileMatrix(trainingFile, 100)
 	cleanData(trainingMatrix)
-	cleanData(testMatrix)
+	#cleanData(testMatrix)
 	#splitMatrix(trainingMatrix)
 	wordCounts = calcCounts(trainingMatrix)
-	checkTrainingOnTraining(testMatrix, wordCounts)
-	exit()
+	#checkTrainingOnTraining(testMatrix, wordCounts)
+	#exit()
 	testMatrix, junk = getFileMatrix(testingFile, 100)
 
 	cleanData(testMatrix)
@@ -75,10 +75,9 @@ def calcProb(sentence_array, counts, totals):
 
 	return scores.index(max(scores))
 
-
 def cleanData(data_matrix):
 	printable = set(string.printable)
-	#prepositions = ["is", "a", "at", "the", "which", "on ", "to"]
+	prepositions = [ "the","to"]
 
 	for line in data_matrix:
 		line[1] = line[1].replace("UPDATE 5-", "")
@@ -99,13 +98,18 @@ def cleanData(data_matrix):
 		# 	line[1] = line[1].replace(prep, "")
 
 		sentence_array = nltk.word_tokenize(line[1])
-		for i in range(len(sentence_array)):
-			sentence_array[i] = str(WordNetLemmatizer().lemmatize(sentence_array[i], 'v'))
+		#print("HELLO")
+		for i in range(len(sentence_array)-1,-1,-1):
+			#print "SUP"
+			#sentence_array[i] = str(WordNetLemmatizer().lemmatize(sentence_array[i], 'v'))
 			sentence_array[i] = str(singularize(sentence_array[i]))
+			if sentence_array[i] in prepositions:
+				sentence_array.pop(i)
 
 
 
 		line.append(sentence_array)
+		print(prepositions)
 
 def splitMatrix(train):
 	for i in range(0,len(train)):
