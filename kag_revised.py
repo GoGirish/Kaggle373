@@ -3,6 +3,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.stem.wordnet import WordNetLemmatizer
 import string
 from pattern.en import singularize
+import math
 
 #GLOBAL
 trainingFile = "Headline_Trainingdata.csv"
@@ -11,12 +12,12 @@ totals = []
 
 def main():
 	global totals
-	trainingMatrix, testMatrix = getFileMatrix(trainingFile, 70)
+	trainingMatrix, testMatrix = getFileMatrix(trainingFile, 100)
 	cleanData(trainingMatrix)
 	cleanData(testMatrix)
 	#splitMatrix(trainingMatrix)
 	wordCounts = calcCounts(trainingMatrix)
-	checkTrainingOnTraining(testMatrix, wordCounts)
+	checkTrainingOnTraining(trainingMatrix, wordCounts)
 	exit()
 	testMatrix, junk = getFileMatrix(testingFile, 100)
 
@@ -65,14 +66,15 @@ def calcProb(sentence_array, counts, totals):
 		denominator = 1	#sum(totals)
 		for j in range(len(sentence_array)):
 			word = sentence_array[j]
-			numerator *= (findCount(counts[i], word) + 1)
+			numerator += (findCount(counts[i], word) + 1)
 			# d = 1.0
 			# for k in range(0,5):
 			# 	d += (findCount(counts[k], word) + 1)
 			# denominator *= d
 		denominator *= totals[i]
-		scores[i] = float(numerator) / float(denominator)
+		scores[i] = (float(numerator) / float(denominator))
 
+	print(scores)
 	return scores.index(max(scores))
 
 
